@@ -1,2 +1,2 @@
 
-![Screenshot_20240516_211928](https://github.com/medhaa09/iitkmailclient/assets/152870486/dd4f43bb-00ac-460a-8c75-9b09f6c33202)
+![Screenshot_20240517_024206](https://github.com/medhaa09/iitkmailclient/assets/152870486/14627849-50e6-4fc2-9ea6-849975be7f9e)
