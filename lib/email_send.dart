@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:mailclient/email_widget.dart';
+import 'package:get_time_ago/get_time_ago.dart';
 import 'package:mailclient/model/data.dart';
 
 class EmailSendScreen extends StatefulWidget {
@@ -9,8 +9,7 @@ class EmailSendScreen extends StatefulWidget {
 
   @override
   State<EmailSendScreen> createState() => _EmailSendScreenState();
-}
-
+} 
 class _EmailSendScreenState extends State<EmailSendScreen> {
  @override
   void initState() {
@@ -28,41 +27,48 @@ class _EmailSendScreenState extends State<EmailSendScreen> {
         focusColor: Colors.grey,
       ),
       appBar: AppBar(
+        actions:[
+          IconButton(onPressed:(){}, icon:const Icon(Icons.chevron_left), )
+        ],
       ),
-      body: ListView.separated(
-        itemBuilder: (context, index) => EmailWidget(mail: mails[index]),
-        itemCount: mails.length,
-        separatorBuilder: (context, index) => Divider(
-          thickness: 0.3,
-          indent: MediaQuery.of(context).size.width * 0.1,
-          endIndent: MediaQuery.of(context).size.width * 0.1,
-        ),
+      body: 
+      Padding(
+        padding:const EdgeInsets.symmetric(horizontal:16.0),
+        child:
+        Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+           ListTile(
+            contentPadding: EdgeInsets.zero,
+      leading: CircleAvatar(
+        backgroundImage: widget.mail.profileImage != null
+            ? NetworkImage(widget.mail.profileImage!)
+            : const AssetImage('assets/default_profile.png') as ImageProvider,
       ),
-      bottomNavigationBar: Container(
-        color: Colors.white,
-        child: SafeArea(
-          child: TabBar(
-            controller: tabController,
-            indicatorColor: Colors.black,
-            labelColor: Colors.black,
-            unselectedLabelColor: Colors.grey,
-            tabs: List.generate(
-              tabs.length,
-              (index) => Tab(
-                height: 50,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(tabs[index].iconData),
-                    const SizedBox(height: 2),
-                    Text(tabs[index].text),
-                    const SizedBox(height: 2),
-                  ],
-                ),
-              ),
-            ),
+      title:
+       
+          Text(
+            widget.mail.userName ?? 'Unknown User',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+          ), 
+          trailing:Text(
+            GetTimeAgo.parse(widget.mail.time ?? DateTime.now()),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey, fontSize: 12),
           ),
+      ),
+      
+        const SizedBox(height:16),
+        // ignore: unnecessary_null_comparison
+        Text(widget.mail!=null? widget.mail.subject:"",
+        style:Theme.of(context).textTheme.headlineSmall
         ),
+        const SizedBox(height:8),
+        // ignore: unnecessary_null_comparison
+        Text(widget.mail!=null? widget.mail.body:"",
+        style:Theme.of(context).textTheme.bodyMedium
+        ),
+        ],
+      ),
       ),
     );
   }

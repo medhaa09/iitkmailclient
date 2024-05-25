@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:get_time_ago/get_time_ago.dart';
+import 'package:mailclient/email_send.dart';
 import 'package:mailclient/model/data.dart';
 
 class EmailWidget extends StatelessWidget {
   final Mail mail;
-
   const EmailWidget({super.key, required this.mail});
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap:(){
+        Navigator.push(context,
+        MaterialPageRoute(
+          builder:(context)=> EmailSendScreen(mail: mail)));
+      },
       leading: CircleAvatar(
         backgroundImage: mail.profileImage != null
             ? NetworkImage(mail.profileImage!)
-            : AssetImage('assets/default_profile.png') as ImageProvider,
+            : const AssetImage('assets/default_profile.png') as ImageProvider,
       ),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,7 +37,11 @@ class EmailWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            mail.body ?? 'No Body Content',
+           mail.body != null
+           ? (mail.body!.length > 100
+          ? "${mail.body!.substring(0, 100)}..."
+          : mail.body!)
+           : '',
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.black54),

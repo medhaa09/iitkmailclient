@@ -1,54 +1,75 @@
 import 'package:flutter/material.dart';
 
-class ComposeScreen extends StatelessWidget {
+class MailComposeScreen extends StatefulWidget {
+  const MailComposeScreen({super.key});
+
+  @override
+  _MailComposeScreenState createState() => _MailComposeScreenState();
+}
+
+class _MailComposeScreenState extends State<MailComposeScreen> {
+  final TextEditingController _recipientController = TextEditingController();
+  final TextEditingController _subjectController = TextEditingController();
+  final TextEditingController _bodyController = TextEditingController();
+
+  void _sendMail() {
+    // Placeholder function to handle sending email logic
+    print("Recipient: ${_recipientController.text}");
+    print("Subject: ${_subjectController.text}");
+    print("Body: ${_bodyController.text}");
+
+    // Clear the text fields after sending
+    _recipientController.clear();
+    _subjectController.clear();
+    _bodyController.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Compose Mail"),
-        backgroundColor: Colors.black,
+        title: const Text('Compose Email'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.send),
+            onPressed: _sendMail,
+          ),
+        ],
       ),
       body: Padding(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextField(
-              decoration: InputDecoration(
-                labelText: "To",
-                labelStyle: TextStyle(color: Colors.black),
-                border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
+              controller: _recipientController,
+              decoration: const InputDecoration(
+                labelText: 'To',
+                hintText: 'Recipient',
+                border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 8),
             TextField(
-              decoration: InputDecoration(
-                labelText: "Subject",
-                labelStyle: TextStyle(color: Colors.black),
-                border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
+              controller: _subjectController,
+              decoration: const InputDecoration(
+                labelText: 'Subject',
+                hintText: 'Email Subject',
+                border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 8),
             Expanded(
               child: TextField(
+                controller: _bodyController,
+                decoration: const InputDecoration(
+                  labelText: 'Body',
+                  hintText: 'Email Body',
+                  border: OutlineInputBorder(),
+                ),
                 maxLines: null,
                 expands: true,
-                decoration: InputDecoration(
-                  labelText: "Content",
-                  labelStyle: TextStyle(color: Colors.black),
-                  border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
-                ),
+                keyboardType: TextInputType.multiline,
               ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Handle send action
-              },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
-              ),
-              child: Text('Send', style: TextStyle(color: Colors.white)),
             ),
           ],
         ),
