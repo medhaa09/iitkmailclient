@@ -3,32 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:mailclient/email_widget.dart';
 import 'package:mailclient/model/data.dart';
 
-class EmailListScreen extends StatefulWidget {
-  const EmailListScreen({super.key});
+class EmailSendScreen extends StatefulWidget {
+  final Mail mail;
+  const EmailSendScreen({super.key, required this.mail});
 
   @override
-  State<EmailListScreen> createState() => _EmailListScreenState();
+  State<EmailSendScreen> createState() => _EmailSendScreenState();
 }
 
-class EmailTab {
-  final String text;
-  final IconData iconData;
-
-  EmailTab(this.text, this.iconData);
-}
-
-class _EmailListScreenState extends State<EmailListScreen>
-    with SingleTickerProviderStateMixin {
-  late TabController tabController;
-  List<EmailTab> tabs = [
-    EmailTab("Inbox", Icons.inbox_outlined),
-    EmailTab("Sent", Icons.send_outlined),
-    EmailTab("Star", Icons.star_border),
-  ];
-
-  @override
+class _EmailSendScreenState extends State<EmailSendScreen> {
+ @override
   void initState() {
-    tabController = TabController(length: tabs.length, vsync: this);
     super.initState();
   }
 
@@ -43,20 +28,6 @@ class _EmailListScreenState extends State<EmailListScreen>
         focusColor: Colors.grey,
       ),
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: TextField(
-          decoration: InputDecoration(
-            hintText: 'Search...',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30),
-              borderSide: BorderSide.none,
-            ),
-            filled: true,
-            contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
-            prefixIcon: Icon(Icons.search),
-          ),
-        ),
       ),
       body: ListView.separated(
         itemBuilder: (context, index) => EmailWidget(mail: mails[index]),
