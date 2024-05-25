@@ -17,10 +17,10 @@ class _ComposeScreenState extends State<ComposeScreen> {
   final _bodyController = TextEditingController();
 
   String userName = 'medhaagar23';
-  String password = 'petPN67#\$';
+  String password = '';
   String domain = 'iitk.ac.in';
   String smtpServer = 'nwm.iitk.ac.in';
-  int smtpPort = 25; 
+  int smtpPort = 443; 
 
   @override
   void dispose() {
