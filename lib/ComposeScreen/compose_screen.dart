@@ -3,7 +3,6 @@ import 'package:enough_mail/enough_mail.dart';
 
 class ComposeScreen extends StatefulWidget {
   const ComposeScreen({super.key});
-
   @override
   _ComposeScreenState createState() => _ComposeScreenState();
 }
@@ -19,8 +18,8 @@ class _ComposeScreenState extends State<ComposeScreen> {
   String userName = 'medhaagar23';
   String password = '';
   String domain = 'iitk.ac.in';
-  String smtpServer = 'nwm.iitk.ac.in';
-  int smtpPort = 443; 
+  String smtpServer = 'mmtp.iitk.ac.in';
+  int smtpPort = 25; 
 
   @override
   void dispose() {
