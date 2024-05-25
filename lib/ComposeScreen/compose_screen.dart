@@ -1,148 +1,69 @@
-// import 'package:flutter/material.dart';
-
-// class MailComposeScreen extends StatefulWidget {
-//   const MailComposeScreen({super.key});
-
-//   @override
-//   _MailComposeScreenState createState() => _MailComposeScreenState();
-// }
-
-// class _MailComposeScreenState extends State<MailComposeScreen> {
-//   final TextEditingController _recipientController = TextEditingController();
-//   final TextEditingController _subjectController = TextEditingController();
-//   final TextEditingController _bodyController = TextEditingController();
-
-//   void _sendMail() {
-//     // Placeholder function to handle sending email logic
-//     print("Recipient: ${_recipientController.text}");
-//     print("Subject: ${_subjectController.text}");
-//     print("Body: ${_bodyController.text}");
-
-//     // Clear the text fields after sending
-//     _recipientController.clear();
-//     _subjectController.clear();
-//     _bodyController.clear();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Compose Email'),
-//         actions: [
-//           IconButton(
-//             icon: const Icon(Icons.send),
-//             onPressed: _sendMail,
-//           ),
-//         ],
-//       ),
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           children: [
-//             TextField(
-//               controller: _recipientController,
-//               decoration: const InputDecoration(
-//                 labelText: 'To',
-//                 hintText: 'Recipient',
-//                 border: OutlineInputBorder(),
-//               ),
-//             ),
-//             const SizedBox(height: 8),
-//             TextField(
-//               controller: _subjectController,
-//               decoration: const InputDecoration(
-//                 labelText: 'Subject',
-//                 hintText: 'Email Subject',
-//                 border: OutlineInputBorder(),
-//               ),
-//             ),
-//             const SizedBox(height: 8),
-//             Expanded(
-//               child: TextField(
-//                 controller: _bodyController,
-//                 decoration: const InputDecoration(
-//                   labelText: 'Body',
-//                   hintText: 'Email Body',
-//                   border: OutlineInputBorder(),
-//                 ),
-//                 maxLines: null,
-//                 expands: true,
-//                 keyboardType: TextInputType.multiline,
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:enough_mail/enough_mail.dart';
 
-class MailComposeScreen extends StatefulWidget {
-  const MailComposeScreen({super.key});
+class ComposeScreen extends StatefulWidget {
+  const ComposeScreen({super.key});
 
   @override
-  _MailComposeScreenState createState() => _MailComposeScreenState();
+  _ComposeScreenState createState() => _ComposeScreenState();
 }
 
-class _MailComposeScreenState extends State<MailComposeScreen> {
+class _ComposeScreenState extends State<ComposeScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _recipientController = TextEditingController();
+
+  // Controllers for form fields
+  final _toController = TextEditingController();
   final _subjectController = TextEditingController();
   final _bodyController = TextEditingController();
 
+  String userName = 'medhaagar23';
+  String password = 'petPN67#\$';
+  String domain = 'iitk.ac.in';
+  String smtpServer = 'nwm.iitk.ac.in';
+  int smtpPort = 25; 
+
   @override
   void dispose() {
-    _recipientController.dispose();
+    _toController.dispose();
     _subjectController.dispose();
     _bodyController.dispose();
     super.dispose();
   }
 
   Future<void> _sendEmail() async {
-    const String smtpServer = 'smtp.example.com';
-    const String userName = 'your-username';
-    const String password = 'your-password';
-    const String senderEmail = 'your-email@example.com';
+    final toAddress = _toController.text;
+    final subject = _subjectController.text;
+    final body = _bodyController.text;
 
-    final email = '$userName@$smtpServer';
-    final config = await Discover.discover(email);
-
-    if (config == null) {
-      print('Unable to auto-discover settings for $email');
-      return;
-    }
-
-    final account = MailAccount.fromDiscoveredSettings('my account', email, password, config);
-    final mailClient = MailClient(account, isLogEnabled: true);
+    final client = SmtpClient(smtpServer, isLogEnabled: true);
 
     try {
-      await mailClient.connect();
-      print('Connected to ${config.displayName}.');
+      // Connect to the SMTP server
+      await client.connectToServer(smtpServer, smtpPort, isSecure: false);
 
-      final builder = MessageBuilder()
-        ..from = [const MailAddress('Sender Name', senderEmail)]
-        ..to = [MailAddress('Recipient Name', _recipientController.text)]
-        ..subject = _subjectController.text
-        ..text = _bodyController.text;
+      // Authenticate with the server
+      await client.ehlo();
+      await client.startTls();
+      await client.authenticate(userName, password, AuthMechanism.login);
+
+      // Create the email
+      final builder = MessageBuilder.prepareMultipartAlternativeMessage(
+        plainText: body,
+        htmlText: '<p>$body</p>',
+      )
+        ..from = [MailAddress('Medha', '$userName@$domain')]
+        ..to = [MailAddress('', toAddress)]
+        ..subject = subject;
 
       final mimeMessage = builder.buildMimeMessage();
-      await mailClient.sendMessage(mimeMessage);
 
+      // Send the email
+      await client.sendMessage(mimeMessage);
       print('Email sent successfully');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Email sent successfully')),
-      );
     } catch (e) {
       print('Failed to send email: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to send email: $e')),
-      );
     } finally {
-      await mailClient.disconnect();
+      await client.disconnect();
     }
   }
 
@@ -151,40 +72,56 @@ class _MailComposeScreenState extends State<MailComposeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Compose Email'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.send),
+            onPressed: _sendEmail,
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextFormField(
-                controller: _recipientController,
-                decoration: const InputDecoration(labelText: 'Recipient'),
+                controller: _toController,
+                decoration: const InputDecoration(
+                  labelText: 'To',
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter the recipient email';
+                    return 'Please enter a recipient';
                   }
                   return null;
                 },
               ),
               TextFormField(
                 controller: _subjectController,
-                decoration: const InputDecoration(labelText: 'Subject'),
+                decoration: const InputDecoration(
+                  labelText: 'Subject',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a subject';
+                  }
+                  return null;
+                },
               ),
               TextFormField(
                 controller: _bodyController,
-                decoration: const InputDecoration(labelText: 'Body'),
-                maxLines: 10,
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    _sendEmail();
+                decoration: const InputDecoration(
+                  labelText: 'Body',
+                ),
+                maxLines: 8,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the email body';
                   }
+                  return null;
                 },
-                child: const Text('Send'),
               ),
             ],
           ),

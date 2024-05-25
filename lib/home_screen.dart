@@ -145,7 +145,7 @@ class _EmailListScreenState extends State<EmailListScreen>
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const MailComposeScreen(),
+              builder: (context) => const ComposeScreen(),
             ),
           );
         },
