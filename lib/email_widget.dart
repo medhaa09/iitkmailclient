@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_time_ago/get_time_ago.dart';
-import 'package:mailclient/email_send.dart';
+import 'package:mailclient/email_view.dart';
 import 'package:mailclient/model/data.dart';
 
 class EmailWidget extends StatelessWidget {
@@ -13,7 +13,7 @@ class EmailWidget extends StatelessWidget {
       onTap:(){
         Navigator.push(context,
         MaterialPageRoute(
-          builder:(context)=> EmailSendScreen(mail: mail)));
+          builder:(context)=> EmailViewScreen(mail: mail)));
       },
       leading: CircleAvatar(
         backgroundImage: mail.profileImage != null

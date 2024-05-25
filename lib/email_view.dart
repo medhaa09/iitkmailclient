@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:get_time_ago/get_time_ago.dart';
 import 'package:mailclient/model/data.dart';
 
-class EmailSendScreen extends StatefulWidget {
+class EmailViewScreen extends StatefulWidget {
   final Mail mail;
-  const EmailSendScreen({super.key, required this.mail});
+  const EmailViewScreen({super.key, required this.mail});
 
   @override
-  State<EmailSendScreen> createState() => _EmailSendScreenState();
+  State<EmailViewScreen> createState() => _EmailViewScreenState();
 } 
-class _EmailSendScreenState extends State<EmailSendScreen> {
+class _EmailViewScreenState extends State<EmailViewScreen> {
  @override
   void initState() {
     super.initState();
