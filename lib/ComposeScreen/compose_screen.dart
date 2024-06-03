@@ -16,7 +16,7 @@ class _ComposeScreenState extends State<ComposeScreen> {
   final _bodyController = TextEditingController();
 
   String userName = 'medhaagar23';
-  String password = 'petPN67#\$t';
+  String password = '';
   String domain = 'iitk.ac.in';
   String smtpServer = 'mmtp.iitk.ac.in';
   int smtpPort = 25;
