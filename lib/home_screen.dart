@@ -41,7 +41,7 @@ class _EmailListScreenState extends State<EmailListScreen>
   
   Future<void> fetchMails() async {
   String userName = 'medhaagar23';
-  String password = 'petPN67#\$t'; 
+  String password = ''; 
   String domain = 'iitk.ac.in';
   String email = '$userName@$domain';
 
