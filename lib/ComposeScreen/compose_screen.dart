@@ -16,10 +16,10 @@ class _ComposeScreenState extends State<ComposeScreen> {
   final _bodyController = TextEditingController();
 
   String userName = 'medhaagar23';
-  String password = '';
+  String password = 'petPN67#\$t';
   String domain = 'iitk.ac.in';
   String smtpServer = 'mmtp.iitk.ac.in';
-  int smtpPort = 25; 
+  int smtpPort = 25;
 
   @override
   void dispose() {
@@ -30,6 +30,10 @@ class _ComposeScreenState extends State<ComposeScreen> {
   }
 
   Future<void> _sendEmail() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
     final toAddress = _toController.text;
     final subject = _subjectController.text;
     final body = _bodyController.text;
@@ -58,9 +62,9 @@ class _ComposeScreenState extends State<ComposeScreen> {
 
       // Send the email
       await client.sendMessage(mimeMessage);
-      print('Email sent successfully');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Email sent successfully')));
     } catch (e) {
-      print('Failed to send email: $e');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to send email: $e')));
     } finally {
       await client.disconnect();
     }
@@ -71,14 +75,8 @@ class _ComposeScreenState extends State<ComposeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Compose Email'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.send),
-            onPressed: _sendEmail,
-          ),
-        ],
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
@@ -89,6 +87,8 @@ class _ComposeScreenState extends State<ComposeScreen> {
                 controller: _toController,
                 decoration: const InputDecoration(
                   labelText: 'To',
+                  prefixIcon: Icon(Icons.email),
+                  border: OutlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -97,10 +97,13 @@ class _ComposeScreenState extends State<ComposeScreen> {
                   return null;
                 },
               ),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _subjectController,
                 decoration: const InputDecoration(
                   labelText: 'Subject',
+                  prefixIcon: Icon(Icons.subject),
+                  border: OutlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -109,10 +112,13 @@ class _ComposeScreenState extends State<ComposeScreen> {
                   return null;
                 },
               ),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _bodyController,
                 decoration: const InputDecoration(
                   labelText: 'Body',
+                  prefixIcon: Icon(Icons.message),
+                  border: OutlineInputBorder(),
                 ),
                 maxLines: 8,
                 validator: (value) {
@@ -121,6 +127,15 @@ class _ComposeScreenState extends State<ComposeScreen> {
                   }
                   return null;
                 },
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _sendEmail,
+                child: const Text('Send'),
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white, backgroundColor: Colors.black, // Set button text color to white
+                  minimumSize: Size(double.infinity, 50), // Make button full-width
+                ),
               ),
             ],
           ),
