@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:enough_mail/enough_mail.dart';
+import 'package:mailclient/backend/EmailService.dart';
+
 
 class ComposeScreen extends StatefulWidget {
   const ComposeScreen({super.key});
@@ -15,11 +16,20 @@ class _ComposeScreenState extends State<ComposeScreen> {
   final _subjectController = TextEditingController();
   final _bodyController = TextEditingController();
 
-  String userName = 'medhaagar23';
-  String password = '';
-  String domain = 'iitk.ac.in';
-  String smtpServer = 'mmtp.iitk.ac.in';
-  int smtpPort = 25;
+  late EmailService _emailService;
+
+  @override
+  void initState() {
+    super.initState();
+    
+    _emailService = EmailService(
+      userName:'medhaagar23',
+      password: '',
+      domain: 'iitk.ac.in',
+     Server: 'mmtp.iitk.ac.in',
+      Port: 25,
+    );
+  }
 
   @override
   void dispose() {
@@ -38,36 +48,8 @@ class _ComposeScreenState extends State<ComposeScreen> {
     final subject = _subjectController.text;
     final body = _bodyController.text;
 
-    final client = SmtpClient(smtpServer, isLogEnabled: true);
-
-    try {
-      // Connect to the SMTP server
-      await client.connectToServer(smtpServer, smtpPort, isSecure: false);
-
-      // Authenticate with the server
-      await client.ehlo();
-      await client.startTls();
-      await client.authenticate(userName, password, AuthMechanism.login);
-
-      // Create the email
-      final builder = MessageBuilder.prepareMultipartAlternativeMessage(
-        plainText: body,
-        htmlText: '<p>$body</p>',
-      )
-        ..from = [MailAddress('Medha', '$userName@$domain')]
-        ..to = [MailAddress('', toAddress)]
-        ..subject = subject;
-
-      final mimeMessage = builder.buildMimeMessage();
-
-      // Send the email
-      await client.sendMessage(mimeMessage);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Email sent successfully')));
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to send email: $e')));
-    } finally {
-      await client.disconnect();
-    }
+    final result = await _emailService.sendEmail(toAddress, subject, body);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result)));
   }
 
   @override
@@ -133,8 +115,9 @@ class _ComposeScreenState extends State<ComposeScreen> {
                 onPressed: _sendEmail,
                 child: const Text('Send'),
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white, backgroundColor: Colors.black, // Set button text color to white
-                  minimumSize: Size(double.infinity, 50), // Make button full-width
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.black, 
+                  minimumSize: Size(double.infinity, 50), 
                 ),
               ),
             ],
@@ -144,3 +127,5 @@ class _ComposeScreenState extends State<ComposeScreen> {
     );
   }
 }
+
+

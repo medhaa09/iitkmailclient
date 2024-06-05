@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:enough_mail/enough_mail.dart';
 import 'package:mailclient/email_widget.dart';
 import 'package:mailclient/model/data.dart';
-import 'package:mailclient/ComposeScreen/compose_screen.dart';
+import 'package:mailclient/backend/EmailService.dart';
+import 'package:mailclient/compose_screen.dart';
 
 class EmailListScreen extends StatefulWidget {
   const EmailListScreen({Key? key}) : super(key: key);
@@ -30,42 +31,32 @@ class _EmailListScreenState extends State<EmailListScreen>
 
   List<MimeMessage> inboxMails = [];
   bool isLoading = true;
-
+late EmailService _emailService;
   @override
   void initState() {
     super.initState();
     tabController = TabController(length: tabs.length, vsync: this);
-    fetchMails();
+     _emailService = EmailService(
+      userName:'medhaagar23',
+      password: '',
+      domain: 'iitk.ac.in',
+     Server: 'qasid.iitk.ac.in',
+      Port: 143,
+    );
+       fetchMails();
   }
-
-  
   Future<void> fetchMails() async {
-  String userName = 'medhaagar23';
-  String password = ''; 
-  String domain = 'iitk.ac.in';
-  String email = '$userName@$domain';
-
-  final client = ImapClient(isLogEnabled: true);
-  try {
-    await client.connectToServer('qasid.iitk.ac.in', 143, isSecure: false);
-    await client.login(userName, password);
-    await client.selectInbox();
-
-    final fetchResult = await client.fetchRecentMessages(
-        messageCount: 15, criteria: 'BODY.PEEK[]');
-    setState(() {
-      inboxMails = fetchResult.messages;
-     
-      isLoading = false;
-    });
-  } catch (e) {
-    print('Failed to fetch emails: $e');
-  } finally {
-    
-    await client.logout();
-    await client.disconnect();
+    try {
+      final messages = await _emailService.fetchMails();
+      setState(() {
+        inboxMails = messages;
+        isLoading = false;
+      });
+    } catch (e) {
+      print('Failed to fetch emails: $e');
+    }
   }
-}
+  
 
   Mail convertMimeMessageToMail(MimeMessage mimeMessage) {
      
