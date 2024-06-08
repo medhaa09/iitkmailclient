@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Mail Client',
       theme: ThemeData(
-        // primarySwatch: Colors.purple,
+         //primarySwatch: Colors.black87,
       ),
       home:const LoginPage()
     );

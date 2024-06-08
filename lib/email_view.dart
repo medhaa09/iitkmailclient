@@ -28,11 +28,7 @@ class _EmailViewScreenState extends State<EmailViewScreen> {
         focusColor: Colors.grey,
       ),
       appBar: AppBar(
-        actions: [
-          IconButton(onPressed: () {
-            Navigator.pop(context);  // To navigate back to the previous screen
-          }, icon: const Icon(Icons.chevron_left),)
-        ],
+       
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),

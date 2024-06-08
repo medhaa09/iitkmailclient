@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mailclient/backend/EmailService.dart';
 
-
 class ComposeScreen extends StatefulWidget {
-  const ComposeScreen({super.key});
+  const ComposeScreen({Key? key}) : super(key: key);
+
   @override
   _ComposeScreenState createState() => _ComposeScreenState();
 }
@@ -21,12 +21,12 @@ class _ComposeScreenState extends State<ComposeScreen> {
   @override
   void initState() {
     super.initState();
-    
+
     _emailService = EmailService(
-      userName:'medhaagar23',
+      userName: '',
       password: '',
       domain: 'iitk.ac.in',
-     Server: 'mmtp.iitk.ac.in',
+      Server: 'mmtp.iitk.ac.in',
       Port: 25,
     );
   }
@@ -63,14 +63,16 @@ class _ComposeScreenState extends State<ComposeScreen> {
         child: Form(
           key: _formKey,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               TextFormField(
                 controller: _toController,
                 decoration: const InputDecoration(
                   labelText: 'To',
                   prefixIcon: Icon(Icons.email),
-                  border: OutlineInputBorder(),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -85,7 +87,9 @@ class _ComposeScreenState extends State<ComposeScreen> {
                 decoration: const InputDecoration(
                   labelText: 'Subject',
                   prefixIcon: Icon(Icons.subject),
-                  border: OutlineInputBorder(),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -98,11 +102,12 @@ class _ComposeScreenState extends State<ComposeScreen> {
               TextFormField(
                 controller: _bodyController,
                 decoration: const InputDecoration(
-                  labelText: 'Body',
-                  prefixIcon: Icon(Icons.message),
-                  border: OutlineInputBorder(),
+                  labelText: '',
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                  ),
                 ),
-                maxLines: 8,
+                maxLines: 40, // Increased maxLines for a larger text area
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter the email body';
@@ -111,21 +116,19 @@ class _ComposeScreenState extends State<ComposeScreen> {
                 },
               ),
               const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: _sendEmail,
-                child: const Text('Send'),
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.black, 
-                  minimumSize: Size(double.infinity, 50), 
-                ),
-              ),
             ],
           ),
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color.fromARGB(255, 41, 41, 41),
+      foregroundColor: Colors.white,
+      focusColor:  Colors.black,
+        onPressed: _sendEmail,
+        tooltip: 'Send',
+        child: const Icon(Icons.send),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
-
-
